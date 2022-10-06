@@ -39,5 +39,12 @@
     "@typescript-eslint/parser": "^5.36.2",
     "eslint": "8.22.0",
     "eslint-plugin-react": "^7.31.8"
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "keywords": [
+    "survey"
+  ],
+  "author": "",
+  "license": "ISC"
 }

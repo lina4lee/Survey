@@ -1,10 +1,13 @@
 import "./App.css";
-import React from "react";
+import React, { useState } from "react";
+import SurveyAnswers from "./SurveyAnswers";
+import Question from "./Question";
+import { AllQuestions, Responses, CurrQuestion } from "./types";
+import logo from "./blueberry.png";
 
-const DEFAULT_QUESTIONS = ["cough_sentence", "cough_blue", "cough_length"];
+const DEFAULT_QUESTIONS: string[] = ["cough_sentence", "cough_blue", "cough_length"];
 
-// All questions the app might ever ask. Do not modify this.
-const ALL_QUESTIONS = {
+const ALL_QUESTIONS: AllQuestions = {
   "cough_sentence": {
     "wording": "Is your child able to finish a sentence without needing a breath?",
     "if_yes_ask": [],
@@ -48,13 +51,35 @@ const ALL_QUESTIONS = {
 };
 
 function App() {
+
+  const [responses, setResponses] = useState<Responses>({});
+  const [questionList, setQuestionList] = useState<string[]>([...DEFAULT_QUESTIONS]);
+
+  const currQuestion: CurrQuestion = questionList[0];
+
+  const buttonHandler = (answer: ("yes" | "no")) => {
+    // store answer in responses object
+    const wording: string = ALL_QUESTIONS[currQuestion].wording;
+    setResponses({ ...responses, [wording]: answer });
+    // check ALL_QUESTIONS obj for subsequent questions to ask, update questionList accordingly
+    const nextQuestions: string[] = ALL_QUESTIONS[currQuestion][`if_${answer}_ask`];
+    setQuestionList([...questionList.slice(1), ...nextQuestions]);
+    return;
+  };
+
   return (
-    <div className="App">
-      <div id="question">
-      </div>
-      <button id="yesButton">Yes</button>
-      <button id="noButton">No</button>
-    </div>
+    !questionList.length
+      ? <SurveyAnswers responses={responses} />
+      : 
+      <>
+        <div className="App">
+          <Question wording={ALL_QUESTIONS[currQuestion].wording}/>
+          <br/>
+          <button id="yesButton" onClick={() => buttonHandler("yes")}>Yes</button>
+          <button id="noButton" onClick={() => buttonHandler("no")}>No</button>
+        </div>
+        <img src={logo} className="logo"/>
+      </>
   );
 }
 
